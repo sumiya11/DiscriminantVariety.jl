@@ -25,7 +25,13 @@ function jacobian(sys, vars)
             J[i, j] = derivative(eq, var)
         end
     end
+    J = Nemo.matrix(ring, J)
     J
+end
+
+function jacobian_minors(sys, vars, order)
+    J = jacobian(sys, vars)
+    Nemo.minors(J, order)
 end
 
 function discriminant_variety(sys, vars, params)
@@ -37,10 +43,13 @@ end
 using Nemo
 
 R, (x, y, z) = polynomial_ring(GF(2^31 - 1), ["x", "y", "z"])
-sys = [x^2 + y + z, x*y + z]
+sys = [x^2 + y + z, x*y + z, x*y*z]
 
 @show eliminate(sys, [z])
 
 @show jacobian(sys, [x, z])
+
+order = 2
+@show jacobian_minors(sys, [x, z], order)
 
 end # module DiscriminantVariety

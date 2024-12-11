@@ -4,7 +4,7 @@
 In Julia terminal, run the following
 
 ```julia
-using Pkg; Pkg.add(url="")
+using Pkg; Pkg.add(url="https://github.com/sumiya11/DiscriminantVariety.jl")
 ```
 
 ### Usage example
