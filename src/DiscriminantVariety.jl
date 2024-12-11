@@ -96,6 +96,7 @@ function postprocess(W_d)
 end
 
 function discriminant_variety(sys, vars, params)
+    @assert internal_ordering(parent(sys[1])) == :lex "The code only works if input system is in :lex, sorry"
     if is_generically_zerodim(sys, vars, params)
         W_d = discriminant_variety_generically_zerodim(sys, vars, params)
     else
