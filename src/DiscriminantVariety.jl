@@ -106,6 +106,8 @@ function discriminant_variety(sys, vars, params)
     W_d
 end
 
+export discriminant_variety
+
 ### Example ###
 
 # Example 1 and Example 2 from
