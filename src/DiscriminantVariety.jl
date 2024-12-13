@@ -47,18 +47,30 @@ function remove_vars(term, vars)
     term
 end
 
+# A hack to reconcile Groebner and Nemo orderings
+function first_parametric_term_drl(f, vars, params)
+    @assert internal_ordering(parent(f)) == :degrevlex
+    ts = collect(terms(f))
+    ts = sort(ts, by=t -> monomial(remove_vars(t, params), 1), rev=true)
+    ts[1]
+end
+
 function is_generically_zerodim(sys, vars, params)
     @assert !isempty(sys) && !isempty(vars) && allunique(vars)
     @assert all(x -> parent(x) == parent(sys[1]), vars)
     @assert all(x -> parent(x) == parent(sys[1]), params)
+    @assert internal_ordering(parent(sys[1])) == :degrevlex
     ordering = DegRevLex(vars) * DegRevLex(params)
     gb = groebner(sys, ordering=ordering)
-    staircase = map(f -> first(collect(terms(f))), gb)
-    zerodim = all(var -> any(lead -> is_univariate_term(lead, var, vars), staircase), vars)
+    staircase = map(f -> first_parametric_term_drl(f, vars, params), gb)
+    closed_staircase = all(var -> any(lead -> is_univariate_term(lead, var, vars), staircase), vars)
+    params_relations = filter(poly -> all(x -> degree(poly, x) == 0, vars), gb)
+    zerodim = closed_staircase && isempty(params_relations)
     zerodim
 end
 
 function discriminant_variety_generically_zerodim(sys, vars, params)
+    @assert internal_ordering(parent(sys[1])) == :degrevlex
     @assert is_generically_zerodim(sys, vars, params)
     
     # The only minor is the determinant
@@ -67,7 +79,7 @@ function discriminant_variety_generically_zerodim(sys, vars, params)
     
     ordering = DegRevLex(vars) * DegRevLex(params)
     gb = groebner(sys, ordering=ordering)
-    staircase = map(f -> first(collect(terms(f))), gb)
+    staircase = map(f -> first_parametric_term_drl(f, vars, params), gb)
     lead_univariate = filter(t -> any(var -> is_univariate_term(t, var, vars), vars), staircase)
     lead_coeffs = map(t -> remove_vars(t, vars), lead_univariate)
     W_infty = map(l -> [l], lead_coeffs)
@@ -96,13 +108,22 @@ function postprocess(W_d)
 end
 
 function discriminant_variety(sys, vars, params)
-    @assert internal_ordering(parent(sys[1])) == :lex "The code only works if input system is in :lex, sorry"
+    # Convert to drl
+    ring = parent(sys[1])
+    K = base_ring(ring)
+    ring_drl, xs = polynomial_ring(K, symbols(ring), internal_ordering=:degrevlex)
+    sys = map(f -> change_base_ring(K, f, parent=ring_drl), sys)
+    vars = map(f -> change_base_ring(K, f, parent=ring_drl), vars)
+    params = map(f -> change_base_ring(K, f, parent=ring_drl), params)
+
     if is_generically_zerodim(sys, vars, params)
         W_d = discriminant_variety_generically_zerodim(sys, vars, params)
     else
         error("Non-zerodim systems are not supported")
     end
+
     W_d = postprocess(W_d)
+    
     W_d
 end
 
