@@ -15,8 +15,13 @@ git clone https://github.com/sumiya11/DiscriminantVariety.jl
 
 ### Usage example
 
-In your favorite terminal, run the following
+In Julia, type the following
 
+```julia
+using Nemo, DiscriminantVariety
+
+R, (x,y,z,a,b,c) = polynomial_ring(QQ, ["x", "y", "z", "a", "b", "c"])
+sys = [a*x^2 + b - 1, y + b*z, y + c*z]
+@show discriminant_variety(sys, [x,y,z], [a,b,c])
 ```
-julia DiscriminantVariety/src/DiscriminantVariety.jl
-```
+
