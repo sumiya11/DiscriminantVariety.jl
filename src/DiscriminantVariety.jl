@@ -1,5 +1,6 @@
 module DiscriminantVariety
 
+import AbstractAlgebra
 using Groebner, Nemo
 
 # When this becomes a bottleneck, it can be implemented in Groebner.jl.
@@ -64,6 +65,14 @@ end
 
 function nemo_crude_evaluate(poly::Nemo.FracElem, varmap)
     nemo_crude_evaluate(numerator(poly), varmap) // nemo_crude_evaluate(denominator(poly), varmap)
+end
+
+function nemo_crude_evaluate(poly::Rational{T}, varmap) where {T}
+    poly
+end
+
+function nemo_crude_evaluate(poly::Nemo.FinFieldElem, varmap)
+    poly
 end
 
 function nemo_crude_evaluate(poly::Nemo.ZZRingElem, varmap)
@@ -170,14 +179,19 @@ end
 function discriminant_variety(sys, vars, params)
     # Sanity checks
     @assert issubset(gens(parent(sys[1])), union(vars, params))
+    @assert isempty(intersect(vars, params))
 
-    # Convert to drl
-    ring = parent(sys[1])
-    K = base_ring(ring)
-    ring_drl, xs = polynomial_ring(K, symbols(ring), internal_ordering=:degrevlex)
-    sys = map(f -> change_base_ring(K, f, parent=ring_drl), sys)
-    vars = map(f -> change_base_ring(K, f, parent=ring_drl), vars)
-    params = map(f -> change_base_ring(K, f, parent=ring_drl), params)
+    ring_orig = parent(sys[1])
+    K_orig = base_ring(ring_orig)
+    @assert K_orig in (Nemo.QQ, AbstractAlgebra.QQ) || K_orig isa Nemo.FinField
+    
+    # Convert to Nemo in deg-rev-lex
+    K = K_orig isa Nemo.FinField ? Nemo.GF(characteristic(K_orig)) : Nemo.QQ
+    ring_drl, xs = polynomial_ring(K, symbols(ring_orig), internal_ordering=:degrevlex)
+    varmap = Dict(gens(ring_orig) .=> gens(ring_drl))
+    sys = map(f -> nemo_crude_evaluate(f, varmap), sys)
+    vars = map(f -> nemo_crude_evaluate(f, varmap), vars)
+    params = map(f -> nemo_crude_evaluate(f, varmap), params)
 
     if is_generically_zerodim(sys, vars, params)
         W_d = discriminant_variety_generically_zerodim(sys, vars, params)
@@ -187,7 +201,7 @@ function discriminant_variety(sys, vars, params)
 
     W_d = postprocess(W_d)
     
-    W_d = map(F -> map(f -> change_base_ring(K, f, parent=ring), F), W_d)
+    W_d = map(F -> map(f -> change_base_ring(K_orig, f, parent=ring_orig), F), W_d)
 
     W_d
 end
