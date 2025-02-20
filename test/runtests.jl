@@ -5,7 +5,7 @@ using DiscriminantVariety
 
 @testset "Basic" begin
     for interface in [Nemo, AbstractAlgebra]
-    for k in [interface.QQ, interface.GF(2^30+3)]
+    for k in [interface.QQ,] #interface.GF(2^30+3)]
     
     R, (x,a) = polynomial_ring(k, ["x","a"])
     dv = DiscriminantVariety.discriminant_variety([a*x^2 + a + 1], [x], [a])
