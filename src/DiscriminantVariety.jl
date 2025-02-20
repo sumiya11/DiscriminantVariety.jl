@@ -56,7 +56,7 @@ function is_generically_zerodim(sys, vars, params)
     @assert internal_ordering(parent(sys[1])) == :degrevlex
     ordering = DegRevLex(vars) * DegRevLex(params)
     gb = groebner(sys, ordering=ordering)
-    staircase = map(f -> Groebner.lead(f, ordering=ordering), gb)
+    staircase = map(f -> Groebner.leading_term(f, ordering=ordering), gb)
     closed_staircase = all(var -> any(lead -> is_univariate_term(lead, var, vars), staircase), vars)
     params_relations = filter(poly -> all(x -> degree(poly, x) == 0, vars), gb)
     zerodim = closed_staircase && isempty(params_relations)
@@ -138,7 +138,7 @@ function discriminant_variety_generically_zerodim(sys, vars, params)
     gb = groebner(sys, ordering=ordering)
     gb = demote_gb(gb, vars, params) 
     
-    staircase = map(f -> monomial(remove_vars(Groebner.lead(f, ordering=ordering), params), 1), gb)
+    staircase = map(f -> monomial(remove_vars(Groebner.leading_term(f, ordering=ordering), params), 1), gb)
     staircase_coeffs = []
     for (poly, lead) in zip(gb, staircase)
         cfs = filter(t -> lead == monomial(remove_vars(t, params), 1), collect(terms(poly)))
