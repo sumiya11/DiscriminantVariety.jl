@@ -11,4 +11,6 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
 AbstractAlgebra = "0.44.4"
+Groebner = "0.9"
+Nemo = "0.48"
 Test = "1.11.0"
