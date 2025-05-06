@@ -13,6 +13,8 @@ or, in your favorite terminal, get the sources
 git clone https://github.com/sumiya11/DiscriminantVariety.jl
 ```
 
+Documentation: https://sumiya11.github.io/DiscriminantVariety.jl/
+
 ### Usage example
 
 In Julia, type the following
