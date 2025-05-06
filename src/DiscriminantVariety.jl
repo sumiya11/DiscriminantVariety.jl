@@ -210,6 +210,7 @@ export discriminant_variety
 
 ### Example ###
 
+#=
 # Example 1 and Example 2 from
 # https://members.loria.fr/GMoroz/assets/LGJMcca09.pdf
 
@@ -222,5 +223,6 @@ sys = [a*x^2 + b - 1, y + b*z, y + c*z]
 R, (x,y,a,b) = polynomial_ring(QQ, ["x", "y", "a", "b"])
 sys = [a*x^6 + b*y^2 - 1, x^2 - a*y - b]
 @show discriminant_variety(sys, [x,y], [a,b])
+=#
 
 end # module DiscriminantVariety
