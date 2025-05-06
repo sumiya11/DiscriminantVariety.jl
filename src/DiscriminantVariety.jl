@@ -176,6 +176,11 @@ function postprocess(W_d; make_squarefree=true)
     W_d
 end
 
+"""
+    discriminant_variety(sys, vars, params)
+
+Computes a Discriminant Variety of system `sys` from `Q[params][vars]`.
+"""
 function discriminant_variety(sys, vars, params)
     # Sanity checks
     @assert issubset(gens(parent(sys[1])), union(vars, params))
