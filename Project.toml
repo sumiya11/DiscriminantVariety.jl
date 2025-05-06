@@ -1,6 +1,6 @@
 name = "DiscriminantVariety"
 uuid = "2f58a086-0456-416b-a47b-60f2de8c8644"
-authors = [Alexander Demin, Christina Katsamaki, Fabrice Rouillier]
+authors = ["Alexander Demin", "Christina Katsamaki", "Fabrice Rouillier"]
 version = "0.0.2"
 
 [deps]
