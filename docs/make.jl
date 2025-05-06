@@ -16,7 +16,7 @@ makedocs(
 # for more information.
 #
 deploydocs( 
-    repo = "github.com/sumiya11/DiscriminantVariety.jl.git",
+    repo = "https://github.com/sumiya11/DiscriminantVariety.jl",
     push_preview = true
 )
 
