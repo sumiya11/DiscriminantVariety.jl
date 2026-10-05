@@ -1,7 +1,7 @@
 name = "DiscriminantVariety"
 uuid = "2f58a086-0456-416b-a47b-60f2de8c8644"
 authors = ["Alexander Demin", "Christina Katsamaki", "Fabrice Rouillier"]
-version = "0.0.3"
+version = "0.0.4"
 
 [deps]
 AbstractAlgebra = "c3fe647b-3220-5bb0-a1ea-a7954cac585d"

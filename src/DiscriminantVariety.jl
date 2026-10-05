@@ -3,8 +3,19 @@ module DiscriminantVariety
 import AbstractAlgebra
 using Groebner, Nemo
 
-# When this becomes a bottleneck, it can be implemented in Groebner.jl.
-function eliminate(sys, vars)
+include("modular_block.jl")
+
+# Over QQ: multi-modular computation lifting only the elimination ideal (see
+# modular_block.jl). Otherwise: plain Groebner basis for a block ordering.
+function eliminate(sys, vars; kwargs...)
+    if base_ring(parent(sys[1])) == Nemo.QQ
+        eliminate_modular(sys, vars; kwargs...)
+    else
+        eliminate_groebner(sys, vars)
+    end
+end
+
+function eliminate_groebner(sys, vars)
     @assert !isempty(sys) && !isempty(vars) && allunique(vars)
     @assert all(x -> parent(x) == parent(sys[1]), vars)
     all_vars = gens(parent(sys[1]))
@@ -152,6 +163,20 @@ function discriminant_variety_generically_zerodim(sys, vars, params)
     W_d
 end
 
+# Over QQ (see modular_block.jl): W_inf from the leading coefficients of the pure
+# powers of `vars`, W_c from the elimination ideal of the system and the Jacobian
+# determinant, both lifted multi-modularly without computing the reduced
+# Groebner basis of the system. The generic zero-dimensionality is checked on the
+# basis modulo the first prime. `batch`: number of primes replayed together.
+function discriminant_variety_modular(sys, vars, params; batch = 4)
+    zerodim, W_infty = infinity_modular(sys, vars, params; batch = batch)
+    zerodim || error("Non-zerodim systems are not supported")
+    # The only minor is the determinant
+    minors = jacobian_minors(sys, vars, length(vars))
+    W_c = [eliminate_modular(vcat(sys, minors), vars; batch = batch)]
+    vcat(W_c, W_infty)
+end
+
 # Make it look more nice.
 function postprocess(W_d; make_squarefree=true)
     W_d = filter(component -> !any(f -> is_constant(f), component), W_d)
@@ -177,11 +202,15 @@ function postprocess(W_d; make_squarefree=true)
 end
 
 """
-    discriminant_variety(sys, vars, params)
+    discriminant_variety(sys, vars, params; batch = 4)
 
 Computes a Discriminant Variety of system `sys` from `Q[params][vars]`.
+
+Over `QQ`, `batch` is the number of primes replayed together in the
+multi-modular computations (see `modular_block.jl`); `batch = 1` replays one
+prime after the other.
 """
-function discriminant_variety(sys, vars, params)
+function discriminant_variety(sys, vars, params; batch = 4)
     # Sanity checks
     @assert issubset(gens(parent(sys[1])), union(vars, params))
     @assert isempty(intersect(vars, params))
@@ -198,7 +227,9 @@ function discriminant_variety(sys, vars, params)
     vars = map(f -> nemo_crude_evaluate(f, varmap), vars)
     params = map(f -> nemo_crude_evaluate(f, varmap), params)
 
-    if is_generically_zerodim(sys, vars, params)
+    if K == Nemo.QQ
+        W_d = discriminant_variety_modular(sys, vars, params; batch = batch)
+    elseif is_generically_zerodim(sys, vars, params)
         W_d = discriminant_variety_generically_zerodim(sys, vars, params)
     else
         error("Non-zerodim systems are not supported")
