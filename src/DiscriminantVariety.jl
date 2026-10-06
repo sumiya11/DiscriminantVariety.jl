@@ -206,9 +206,8 @@ end
 
 Computes a Discriminant Variety of system `sys` from `Q[params][vars]`.
 
-Over `QQ`, `batch` is the number of primes replayed together in the
-multi-modular computations (see `modular_block.jl`); `batch = 1` replays one
-prime after the other.
+`batch` is a tuning parameter of the computation over `QQ` (`batch = 1`:
+sequential).
 """
 function discriminant_variety(sys, vars, params; batch = 4)
     # Sanity checks
