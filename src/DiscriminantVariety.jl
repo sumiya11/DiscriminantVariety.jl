@@ -1,3 +1,9 @@
+"""
+    DiscriminantVariety
+
+Discriminant varieties of parametric polynomial systems that are generically
+zero-dimensional in their unknowns; see [`discriminant_variety`](@ref).
+"""
 module DiscriminantVariety
 
 import AbstractAlgebra
@@ -177,7 +183,9 @@ function discriminant_variety_modular(sys, vars, params; batch = 4)
     vcat(W_c, W_infty)
 end
 
-# Make it look more nice.
+# Removes the constant components, splits each component given by one polynomial
+# into its irreducible factors (with multiplicity if `make_squarefree = false`),
+# sorts by total degree and removes duplicates.
 function postprocess(W_d; make_squarefree=true)
     W_d = filter(component -> !any(f -> is_constant(f), component), W_d)
     W_d_ = empty(W_d)
@@ -202,12 +210,22 @@ function postprocess(W_d; make_squarefree=true)
 end
 
 """
-    discriminant_variety(sys, vars, params; batch = 4)
+    discriminant_variety(sys, vars, params; batch = 4) -> Vector{Vector}
 
-Computes a Discriminant Variety of system `sys` from `Q[params][vars]`.
+Compute a discriminant variety of the system `sys` of `K[params][vars]`, generically
+zero-dimensional in `vars`, with `K` either `QQ` (Nemo or AbstractAlgebra) or a prime
+field (Nemo).
 
-`batch` is a tuning parameter of the computation over `QQ` (`batch = 1`:
-sequential).
+The result is a list of components, each a list of polynomials in `params` of the
+ring of `sys`: the elimination ideal `<sys, det(Jacobian w.r.t. vars)> ∩ K[params]`
+and, for each variable of `vars`, the leading coefficients of the elements of a
+Groebner basis for `DRL(vars) > DRL(params)` whose leading monomial in `vars` is a
+pure power of that variable. Constant components are removed and components given
+by one polynomial are split into irreducible factors. An error is raised if `sys`
+is not generically zero-dimensional in `vars`.
+
+`batch`: over `QQ`, the number of primes replayed together, one of
+`1, 2, 4, ..., 128` (`batch = 1`: one prime after the other).
 """
 function discriminant_variety(sys, vars, params; batch = 4)
     # Sanity checks

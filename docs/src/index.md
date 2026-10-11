@@ -1,19 +1,25 @@
-## What is a Discriminant Variety ?
+# DiscriminantVariety.jl: discriminant varieties of parametric polynomial systems
 
-Suppose that $P_1,\ldots,P_s \in \mathbb{Q} [U_1,\ldots,U_l][X_1,\ldots ,X_n]$ for a zero-dimensional system for almost all parameter values (the $U_1,\ldots,U_l$). The *discriminant variety* of $P_1,\ldots,P_s$, which can be computed by means of Gröbner bases, is the zero set of some polynomial equations in $U_1,\ldots,U_l$ such that over any ball in the parameter's space that does not meet the discriminant variety, the zero set of the system defines an analytic covering of the ball.
+`DiscriminantVariety.jl` computes a discriminant variety of a parametric polynomial system that is generically zero-dimensional in its unknowns.
 
-Given a discriminant or a discriminant variety, both defined as a union of zeroes of polynomials depending on the parameters, one has to describe the connected components of its complement, say the regions above which the solutions are mathematically stable (the implicit function theorem can be applied on each leaf). In the real case, we are then interested in the regions where the polynomials defining the discriminant variety are of constant and non null sign, which corresponds to the cells of maximum dimension in a *Cylindrical Algebraic Decomposition* (CAD) of the parameters' space adapted to the polynomials defining the discriminant variety.
+It provides:
 
-The entire parameter's space can then be viewed as the union of these cells and
-of the discriminant variety.
+- the [discriminant variety](discriminant.md) of a system in ``\mathbb{Q}[U_1,\ldots,U_l][X_1,\ldots,X_n]`` or over a prime field, with its two parts: critical values and values at infinity;
+- a [multi-modular computation over ``\mathbb{Q}``](modular.md) that lifts only the ideals in the parameters, not the Groebner basis of the system.
+
+It is part of the [PACE.jl](https://pace.gitlabpages.inria.fr/pace.jl) ecosystem, which re-exports [`discriminant_variety`](@ref).
 
 ## Installation
 
+DiscriminantVariety is in the General registry:
+
+```julia
+using Pkg
+Pkg.add("DiscriminantVariety")
 ```
-using Pkg; Pkg.add("DiscriminantVariety");
+
+Then load it:
+
+```julia
+using DiscriminantVariety
 ```
-
-## References
-
-1. Daniel Lazard, Fabrice Rouillier, Solving parametric polynomial systems, Journal of Symbolic Computation, Volume 42, Issue 6, 2007, Pages 636-667, (https://doi.org/10.1016/j.jsc.2007.01.007)[https://doi.org/10.1016/j.jsc.2007.01.007].
-

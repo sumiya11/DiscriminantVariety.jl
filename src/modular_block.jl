@@ -11,7 +11,7 @@
 #                          (non reduced) Groebner basis in the parameters.
 #
 # Neither needs the reduced Groebner basis of I, which is large and expensive to
-# obtain (most of the time is then spent in the final reduction). The method:
+# obtain. The method:
 #
 #   1. Homogenize the system with a new variable h, placed last in the block of the
 #      parameters: DRL(vars) > DRL(params, h). No saturation by h is needed: if G is

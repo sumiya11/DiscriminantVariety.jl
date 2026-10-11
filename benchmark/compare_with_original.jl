@@ -1,12 +1,11 @@
-# Compares `discriminant_variety` between a reference revision (default: HEAD,
-# the original code) and the working tree (the new code).
+# Compares the results and timings of `discriminant_variety` between a git
+# revision of the repository ("original", default HEAD) and the working tree ("new").
 #
 # Usage, from anywhere:
 #
 #     julia benchmark/compare_with_original.jl [--tripod] [--timeout SECONDS] [--ref REV]
 #
-#   --tripod     also run Systems/tripod_1_1_qz.jl (the original code may need
-#                a lot of time and memory on it)
+#   --tripod     also run Systems/tripod_1_1_qz.jl (a large case)
 #   --timeout    time limit per case and per version, in seconds (default 600)
 #   --ref        git revision of the original code (default HEAD)
 #

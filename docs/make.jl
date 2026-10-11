@@ -1,22 +1,37 @@
 using Documenter
 using DiscriminantVariety
 
-makedocs(
-    sitename = "DiscriminantVariety.jl",
-    format = Documenter.HTML(),
-    pages = [
-        "Home" => "index.md",
-        "API" => "api.md"
-    ],
-    remotes = nothing
+# Individual files
+About = "Introduction" => "index.md"
+Manual = "Manual" => [
+    "Discriminant varieties" => "discriminant.md",
+    "Computation over QQ" => "modular.md",
+]
+PublicAPI = "Public API" => "api.md"
+Reference = "Reference" => [PublicAPI]
+
+PAGES = [
+    About,
+    Manual,
+    Reference
+]
+
+# Using MathJax3 for better math rendering
+format = Documenter.HTML(
+    mathengine = Documenter.MathJax3(),
+    prettyurls = get(ENV, "CI", nothing) == "true"
 )
 
-# Documenter can also automatically deploy documentation to gh-pages.
-# See "Hosting Documentation" and deploydocs() in the Documenter manual
-# for more information.
-#
-deploydocs( 
+makedocs(
+    sitename = "DiscriminantVariety.jl",
+    format = format,
+    modules = [DiscriminantVariety],
+    repo = "https://github.com/sumiya11/DiscriminantVariety.jl/blob/{commit}{path}#{line}",
+    checkdocs = :exports,
+    pages = PAGES
+)
+
+deploydocs(
     repo = "https://github.com/sumiya11/DiscriminantVariety.jl",
     push_preview = true
 )
-

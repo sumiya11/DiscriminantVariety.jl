@@ -1,6 +1,15 @@
-# API Reference
+# Public API
 
 ```@docs
-discriminant_variety(system, vars, params)
+DiscriminantVariety
 ```
 
+```@index
+Pages = ["api.md"]
+```
+
+## Discriminant variety
+
+```@docs
+discriminant_variety
+```
