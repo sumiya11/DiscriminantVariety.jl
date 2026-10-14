@@ -183,9 +183,18 @@ function discriminant_variety_modular(sys, vars, params; batch = 4)
     vcat(W_c, W_infty)
 end
 
-# Removes the constant components, splits each component given by one polynomial
-# into its irreducible factors (with multiplicity if `make_squarefree = false`),
-# sorts by total degree and removes duplicates.
+"""
+    postprocess(W_d; make_squarefree = true) -> Vector{Vector}
+
+Normalize a list of components `W_d`, each a list of polynomials: remove the
+components containing a constant polynomial, split each component given by one
+polynomial into one component per irreducible factor (the factor itself if
+`make_squarefree = true`, the factor raised to its multiplicity otherwise), sort
+the components by maximal total degree and remove the duplicates.
+
+This is the last step of [`discriminant_variety`](@ref); it can be applied to a
+discriminant variety computed by other means to get the same normal form.
+"""
 function postprocess(W_d; make_squarefree=true)
     W_d = filter(component -> !any(f -> is_constant(f), component), W_d)
     W_d_ = empty(W_d)
@@ -259,7 +268,7 @@ function discriminant_variety(sys, vars, params; batch = 4)
     W_d
 end
 
-export discriminant_variety
+export discriminant_variety, postprocess
 
 ### Example ###
 

@@ -11,8 +11,10 @@ constant and the solutions depend continuously on the parameters. Over `QQ` the
 computation is multi-modular and lifts only the ideals in the parameters; over a
 prime field it uses Groebner bases from [Groebner.jl](https://github.com/sumiya11/Groebner.jl).
 
-It is part of the [PACE.jl](https://pace.gitlabpages.inria.fr/pace.jl) ecosystem,
-which re-exports `discriminant_variety`.
+It is part of the [PACE.jl](https://pace.gitlabpages.inria.fr/pace.jl) ecosystem:
+`PACE.discriminant_variety` computes the discriminant variety either with this
+package or with the C library LACE (`PACE.dv_backend!`) and normalizes the result
+with `postprocess`.
 You can find the documentation [here](https://sumiya11.github.io/DiscriminantVariety.jl/).
 
 ## Installation

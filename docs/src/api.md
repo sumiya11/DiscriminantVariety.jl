@@ -13,3 +13,9 @@ Pages = ["api.md"]
 ```@docs
 discriminant_variety
 ```
+
+## Normalization of the components
+
+```@docs
+postprocess
+```

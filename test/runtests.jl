@@ -113,3 +113,10 @@ end
           DiscriminantVariety.discriminant_variety(sys, [x,y], [a,b])
     @test_throws ArgumentError DiscriminantVariety.eliminate_modular(full, [x,y]; batch = 3)
 end
+
+@testset "postprocess" begin
+    R, (a, b) = polynomial_ring(Nemo.QQ, ["a", "b"])
+    W = [[R(3)], [a^2 * (b - 1)], [b - 1], [a, b]]
+    @test Set(postprocess(W)) == Set([[a], [b - 1], [a, b]])
+    @test Set(postprocess(W; make_squarefree = false)) == Set([[a^2], [b - 1], [a, b]])
+end
